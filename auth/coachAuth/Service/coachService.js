@@ -141,3 +141,8 @@ export const fetchCoachProfile = async (coachId) => {
     cv: coach.cv
   };
 };
+
+export const fetchUnverifiedCoaches = async () => {
+   const coaches = await coachRepo.find_NotVerified_Coaches();
+   return coaches
+};

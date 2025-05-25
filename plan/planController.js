@@ -1,5 +1,6 @@
 import { generateUserPlan } from './planService.js';
 import { createUserPlanService } from './planService.js';
+import { getUserPlanService } from './planService.js';
 
 
 export const generatePlan = async (req, res) => {
@@ -43,5 +44,32 @@ export const createUserPlanController = async (req, res) => {
   } catch (error) {
     console.error('Create user plan error:', error.message);
     res.status(500).json({ error: 'Server error creating user plan' });
+  }
+};
+
+
+export const getUserPlanController = async (req, res) => {
+  const userId = req.user._id;
+
+  try {
+    const plan = await getUserPlanService(userId);
+
+    if (!plan) {
+      return res.status(404).json({
+        success: false,
+        message: 'No plan found for this user.',
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      plan,
+    });
+  } catch (error) {
+    console.error('Error retrieving user plan:', error);
+    return res.status(500).json({
+      success: false,
+      error: error.message,
+    });
   }
 };

@@ -3,7 +3,7 @@ import { AppError } from '../utils/AppError.js';
 import User from '../auth/userAuth/model/userModel.js';
 
 
-const authMiddleware = async (req, res, next) => {console.log("aaaaaaaaaaaaaaaaaaaaa")
+const authMiddleware = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {

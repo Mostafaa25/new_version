@@ -1,10 +1,16 @@
-import User from "../auth/userAuth/model/userModel.js"
-import Plan from "../plan/UserPlanModel.js"
+import User from "../auth/userAuth/model/userModel.js";
+import Plan from "../plan/UserPlanModel.js";
 
+/**
+ * Find a user by their ID
+ */
 export const findUserById = async (userId) => {
   return await User.findById(userId);
 };
 
+/**
+ * Update basic user profile fields
+ */
 export const updateUserData = async (user, userData) => {
   user.age = userData.age || user.age;
   user.weight = userData.weight || user.weight;
@@ -15,19 +21,30 @@ export const updateUserData = async (user, userData) => {
   return await user.save();
 };
 
+/**
+ * Create a new plan
+ */
 export const createPlan = async (data) => {
   return await Plan.create(data);
 };
 
-export const  getPlanByUserId = async (userId) => {
-  return await Plan.findOne({ userId });
-};
 
-export const  updatePlan = async (userId, data) => {
-  return await Plan.findOneAndUpdate({ userId }, data, { new: true, upsert: true });
+/**
+ * Update existing plan or insert if not found
+ */
+export const updatePlan = async (userId, data) => {
+  return await Plan.findOneAndUpdate({ userId }, data, {
+    new: true,
+    upsert: true,
+  });
 };
 
 export const saveUserPlan = async (userPlanData) => {
   const newPlan = new Plan(userPlanData);
   return await newPlan.save();
+};
+
+
+export const getPlanByUserId = async (userId) => {
+  return await Plan.findOne({ userId });
 };

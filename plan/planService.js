@@ -1,7 +1,14 @@
 import { MakeDietPlan } from '../aiPot/DietPlanGenerator.js';
 import { MakeWorkoutPlan } from '../aiPot/WorkoutPlanGenerator.js';
-import { findUserById, updateUserData } from './PlanRepository.js';
-import {saveUserPlan} from './PlanRepository.js'
+import {
+  findUserById,
+  updateUserData,
+  saveUserPlan,
+} from './PlanRepository.js';
+
+import { getPlanByUserId } from './PlanRepository.js';
+
+
 
 export const generatePlans = async (userData) => {
   try {
@@ -32,8 +39,18 @@ export const generateUserPlan = async (userId, userData) => {
   const user = await findUserById(userId);
   if (!user) throw new Error('User not found');
 
+  // Update the user's physical data
   await updateUserData(user, userData);
-  return await generatePlans(userData); 
+
+  // Generate the actual plan
+  const result = await generatePlans(userData);
+
+  // Save to DB only if successful
+  if (result.success) {
+    await createUserPlanService(userId, result.dietPlan, result.workoutPlan);
+  }
+
+  return result;
 };
 
 
@@ -41,8 +58,13 @@ export const createUserPlanService = async (userId, dietPlan, workoutPlan) => {
   const userPlanData = {
     userId,
     dietPlan,
-    workoutPlan
+    workoutPlan,
   };
 
   return await saveUserPlan(userPlanData);
+};
+
+
+export const getUserPlanService = async (userId) => {
+  return await getPlanByUserId(userId);
 };

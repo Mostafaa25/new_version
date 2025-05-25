@@ -100,3 +100,15 @@ export const getCoachProfile = async (req, res) => {
     res.status(500).json({ message: 'Server Error', error: err.message });
   }
 };
+
+export const getAllCoaches = async (req, res, next) => {
+  try {
+    const coaches = await coachService.fetchUnverifiedCoaches();
+    res.status(200).json({
+      status: 'success',
+      data: coaches
+    });
+  } catch (err) {
+    next(err); 
+  }
+};

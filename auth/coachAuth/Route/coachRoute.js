@@ -13,7 +13,7 @@ router.put('/updateCoach', authMiddleware, coachController.updateSelfProfile);
 router.delete('deleteCoach/:id', adminMiddleware ,coachController.deleteCoach);
 router.patch('/:id/verify', authMiddleware, adminMiddleware, coachController.verifyCoach);
 router.get('/CoachProfile/:coachId', coachController.getCoachProfile);
-
+router.get('/GetAll/Coaches', coachController.getAllCoaches);
 
 
 export default router;

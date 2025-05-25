@@ -15,7 +15,8 @@ const Register = async(userData)=>{
             throw new AppError('account is already exists!' , 400)
         }
 
-    const hash_pass = await bcrypt.hash(password , 12)
+    const hash_pass = await bcrypt.hash(password, 10);
+
     const newuser = {
         userName,
         email,
