@@ -8,13 +8,12 @@ import  mongoose  from 'mongoose'
 };
 
 const findWorkoutDaysByExercise = async (userId, exerciseId) => {
-  console.log('User ID:', userId);
-console.log('Exercise ID:', exerciseId);
-
   return await WorkoutDay.find({
-     user: new mongoose.Types.ObjectId(userId),
-  'exercises.exercise': new mongoose.Types.ObjectId(exerciseId)
-  }).populate('exercises.exercise');
+    user: new mongoose.Types.ObjectId(userId)
+  })
+  .populate('exercises.exercise')
+  .sort({ date: -1 })
+  .exec();
 };
 
 export {createWorkoutDay , getWorkoutDaysByUser , createExercise , findWorkoutDaysByExercise}

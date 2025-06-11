@@ -49,7 +49,7 @@ const login = async(email,password,res)=>{
     throw new AppError("password or Email are incorrect!" , 500)
 }
 
-export const getUserProfileService = async (userId) => {
+ const getUserProfileService = async (userId) => {
   const user = await Repo.findUserById(userId);
   if (!user) {
     throw new Error('User not found');
@@ -57,7 +57,12 @@ export const getUserProfileService = async (userId) => {
   return user;
 };
 
+
+
 export {
     login,
     Register,
+    getUserProfileService , 
+    
+
 }

@@ -1,12 +1,14 @@
-
 import WorkoutDay from '../Workout/WorkoutDayModel.js';
+import Exercise from '../Workout/ExerciseModel.js';
 import {createExercise} from "./workoutRepository.js"
 import {findWorkoutDaysByExercise} from "./workoutRepository.js"
 
-export const createWorkoutDay = async (data) => {
-  const userId = data.user;
+export const createWorkoutDay = async (data, userid) => {
+  const userId = userid;
   const today = new Date();
   today.setHours(0, 0, 0, 0); // Normalize to start of the day
+
+  data.user = userId;
 
   // 1. Find existing workout for today
   let workoutDay = await WorkoutDay.findOne({
@@ -26,15 +28,8 @@ export const createWorkoutDay = async (data) => {
     );
 
     if (existingExercise) {
-      // Exercise exists, add new sets
-      for (const incomingSet of incomingExercise.sets) {
-        const isDuplicate = existingExercise.sets.some(set =>
-          set.setNumber === incomingSet.setNumber
-        );
-        if (!isDuplicate) {
-          existingExercise.sets.push(incomingSet);
-        }
-      }
+      // Exercise exists, just add the new sets
+      existingExercise.sets.push(...incomingExercise.sets);
     } else {
       // Add new exercise to workout
       workoutDay.exercises.push(incomingExercise);
@@ -59,28 +54,48 @@ export const getExerciseSets = async (exerciseId, userId) => {
     throw new Error('Exercise ID and User ID are required.');
   }
 
+  // جلب جميع أيام التمرين
   const workouts = await findWorkoutDaysByExercise(userId, exerciseId);
-
-  const allSets = [];
-
-  workouts.forEach(day => {
-    const exerciseEntry = day.exercises.find(
-      ex => ex.exercise._id.toString() === exerciseId
+  
+  // تجميع كل التمارين حسب التاريخ
+  const workoutHistory = workouts.map(workout => {
+    const exerciseData = workout.exercises.find(ex => 
+      ex.exercise._id.toString() === exerciseId
     );
-    if (exerciseEntry) {
-      exerciseEntry.sets.forEach(set => {
-        allSets.push({
-          date: day.date,
+
+    if (exerciseData) {
+      return {
+        workoutId: workout._id,
+        date: workout.date,
+        exerciseName: exerciseData.exercise.name,
+        youtubeLink: exerciseData.exercise.youtubeLink,
+        sets: exerciseData.sets.map(set => ({
           setNumber: set.setNumber,
           weight: set.weight,
-          reps: set.reps
-        });
-      });
+          reps: set.reps,
+          setId: set._id
+        }))
+      };
     }
-  });
+    return null;
+  }).filter(workout => workout !== null);
 
-  // Sort by date then set number
-  allSets.sort((a, b) => new Date(a.date) - new Date(b.date) || a.setNumber - b.setNumber);
+  return {
+    exerciseHistory: workoutHistory,
+    totalWorkouts: workoutHistory.length,
+    totalSets: workoutHistory.reduce((sum, workout) => sum + workout.sets.length, 0)
+  };
+};
 
-  return allSets;
+export const getUserWorkouts = async (userId) => {
+  if (!userId) {
+    throw new Error('User ID is required');
+  }
+  return await WorkoutDay.find({ user: userId })
+    .populate('exercises.exercise')
+    .sort({ date: -1 });
+};
+
+export const getAllExercises = async () => {
+  return await Exercise.getAllExercises();
 };

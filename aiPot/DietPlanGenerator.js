@@ -7,7 +7,7 @@ const together = new Together({
 async function MakeDietPlan(userData) {
   const { age, weight, height, goal, workout_days } = userData;
 
-  const prompt = `
+const prompt = `
   Create a detailed Egyptian diet plan in Arabic with:
   - Age: ${age} years
   - Weight: ${weight} kg
@@ -16,9 +16,9 @@ async function MakeDietPlan(userData) {
   - Workout days: ${workout_days}/week
 
   Requirements:
-  1. Use common Egyptian foods (foul, taameya, etc.)
-  2. Include exact quantities in grams for each item
-  3. Include macros (carbs, protein, fat) for each meal
+  1. Use ONLY common Egyptian foods like: بطيخ، تفاح، أناناس، العدس، البيض البلدي، الجبنة القريش، الفول المدمس، السمك المشوي، الحمص، الكبدة، الأرز البسمتي، العيش البلدي الأسمر، البطاطا، الذرة المشوية، القلقاس، التمر، زيت الزيتون، الطحينة، عين الجمل، فراخ مسلوقة.
+  2. Include exact quantities in grams for each item.
+  3. Include macros (carbs, protein, fat) for each meal.
   4. Return ONLY valid JSON in this format:
      {
        "planName": "string",
@@ -52,9 +52,11 @@ async function MakeDietPlan(userData) {
        },
        "notes": "string"
      }
-  5. Write in Egyptian Arabic dialect
-  6. DO NOT include markdown formatting
-  `;
+  5. Write in Egyptian Arabic dialect.
+  6. Meals MUST include ingredients from the specified Egyptian food list only.
+  7. DO NOT include markdown formatting.
+`;
+
 
   try {
     const response = await together.chat.completions.create({

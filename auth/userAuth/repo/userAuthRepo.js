@@ -1,5 +1,5 @@
 import User from '../../../auth/userAuth/model/userModel.js'
-
+import Coach from '../../coachAuth/Model/coachModel.js';
 const FindByEmail = async(email)=>{
     return await User.findOne({email}) 
 }
@@ -13,12 +13,16 @@ const findUser = async (filter) => {
     return await User.findOne(filter);
 }
 
-export const findUserById = async (id) => {
+ const findUserById = async (id) => {
   return await User.findById(id).select('-password');
 };
+
+
 
 export  {
     FindByEmail,
     saveuser ,
-    findUser
+    findUser , 
+    findUserById
+    
 }

@@ -17,8 +17,9 @@ const authMiddleware = async (req, res, next) => {
     if (!user) {
       return next(new AppError('User no longer exists', 401));
     }
-   console.log(user)
     req.user = user;
+        console.log("we are in authMiddleware and user  is " + req.user)
+
     next();
   } catch (error) {
     return next(new AppError('Invalid or expired token', 401));

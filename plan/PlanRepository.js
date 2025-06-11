@@ -46,5 +46,5 @@ export const saveUserPlan = async (userPlanData) => {
 
 
 export const getPlanByUserId = async (userId) => {
-  return await Plan.findOne({ userId });
+  return await Plan.find({ userId });
 };

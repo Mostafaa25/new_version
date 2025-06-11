@@ -61,6 +61,21 @@ export const coachlogin = async (email, password) => {
   return token;
 };
 
+export const coachLogout = async (userId) => {
+  const user = await userRepo.findUser({ _id: userId });
+  if (!user) {
+    throw new AppError('User not found', 404);
+  }
+  
+  // Clear the token field if it exists
+  if (user.token) {
+    user.token = undefined;
+    await userRepo.saveuser(user);
+  }
+  
+  return true;
+};
+
 export const coachRegister = async (data) => {
   const existingCoach = await coachRepo.findCoachByUserId(data.userId);
   if (existingCoach) {
@@ -146,3 +161,30 @@ export const fetchUnverifiedCoaches = async () => {
    const coaches = await coachRepo.find_NotVerified_Coaches();
    return coaches
 };
+
+/*export  const getcoachProfile = async (userId) => {
+  const coach = await coachRepo.findCoachById(userId);
+  
+  if (!coach) {
+    throw new AppError('Coach not found', 404);
+  }
+
+  if (!coach.verified) {
+    throw new AppError('Account pending verification', 403);
+  }
+
+  return coach;
+};*/
+
+export async function getCoachProfileByUserId(userId) {
+  const coach = await coachRepo.findCoachByUserId(userId);
+
+  if (!coach) {
+    throw new Error('No coach found with this user ID');
+  }
+
+  return coach;
+}
+
+
+

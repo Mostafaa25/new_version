@@ -4,8 +4,7 @@ export const createCoach = async (data) => {
   return await Coach.create(data);
 };
 
-export const findCoachById = async (id) => {
-  console.log("Received id:", id); // Log the id to inspect it
+export const findCoachById = async (id) => {console.log(id)
   return await Coach.findById(id);
 };
 
@@ -15,7 +14,6 @@ export const updateCoach = async (id, data) => {
     runValidators: true 
   });
 };
-
 
 
 export const deleteCoach = async (id) => {
@@ -56,3 +54,4 @@ export const findCoachByUserId = async (userId) => {
 export const find_NotVerified_Coaches = async () => {
   return await Coach.find({ isVerified: false });
 };
+

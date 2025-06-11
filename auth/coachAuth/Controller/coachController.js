@@ -19,6 +19,14 @@ export const coachlogin = catchAsync(async (req, res) => {
   });
 });
 
+export const coachLogout = catchAsync(async (req, res) => {
+  await coachService.coachLogout(req.user._id);
+  return res.status(200).json({
+    success: true,
+    message: 'Coach logged out successfully',
+  });
+});
+
 export const searchCoaches = catchAsync(async (req, res) => {
   const { name } = req.query;
   const coaches = await coachService.searchCoaches(name);
@@ -69,8 +77,6 @@ export const updateSelfProfile = catchAsync(async (req, res, next) => {
   });
 });
 
-
-
 export const deleteCoach = catchAsync(async (req, res) => {
   await coachService.deleteCoachProfile(req.params.id);
   return res.status(200).json({
@@ -112,3 +118,17 @@ export const getAllCoaches = async (req, res, next) => {
     next(err); 
   }
 };
+
+ export const getcoachProfile = async (req, res, next) => {
+  try {
+    // Your authMiddleware already attached req.user
+    console.log("we are in controller and user  is " + req.user)
+    const coachid = await coachService.getCoachProfileByUserId(req.user._id)
+    const profile = await coachService.fetchCoachProfile(coachid);
+    res.status(200).json(profile);
+  } catch (error) {
+    next(error); // Forward to your global error handler
+  }
+};
+
+

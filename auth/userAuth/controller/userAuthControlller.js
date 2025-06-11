@@ -27,8 +27,11 @@ const login = catchAsync(async( req, res,next)=>{
 };
 
 
+
+
 export {
     login,
     Register,
-    getUserProfile
+    getUserProfile ,
+    
 }

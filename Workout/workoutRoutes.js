@@ -1,5 +1,5 @@
 import express from 'express';
-import { createWorkoutDay, getWorkoutDays } from './workoutController.js';
+import { createWorkoutDay, getWorkoutDays, getAllExercises } from './workoutController.js';
 import Exercise from "../Workout/ExerciseModel.js"
 import {createExercise} from "../Workout/workoutController.js"
 import {getExerciseHistory} from "./workoutController.js"
@@ -7,14 +7,16 @@ import {authMiddleware , adminMiddleware} from '../utils/authMiddleware.js'
 
 const router = express.Router();
 
-router.post('/', createWorkoutDay);
-router.get('/:userId', getWorkoutDays);
-
-router.get('/exercise/:exerciseId', authMiddleware,getExerciseHistory);
+// Specific routes first
+router.get('/exercises', authMiddleware, getAllExercises);
+router.get('/exercise/:exerciseId', authMiddleware, getExerciseHistory);
 
 // Create new exercise (e.g., Squats with a YouTube link)
 router.post('/AddNewExercise', authMiddleware,adminMiddleware,createExercise);
 
+// General routes with parameters after
+router.post('/', createWorkoutDay);
+router.get('/:userId', getWorkoutDays);
 router.post('/day', authMiddleware,createWorkoutDay);
 
 // Temporary route to seed 20 exercises

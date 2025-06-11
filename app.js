@@ -29,6 +29,15 @@ app.use('/workouts', workoutRoutes.default);
 import * as plans from './plan/planRoutes.js' 
 app.use('/plans', plans.default);
 
+// Error handling middleware (should be after all routes)
+app.use((err, req, res, next) => {
+  console.error(err.stack); // Log the error for debugging
+
+  res.status(err.statusCode || 500).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+  });
+});
 
 app.listen(process.env.PORT || 3000,()=>{
     console.log(`listening on port: ${process.env.PORT}`)

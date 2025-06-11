@@ -3,7 +3,8 @@ import {addNewExercise} from "./workoutService.js"
 import {getExerciseSets} from "./workoutService.js"
 export const createWorkoutDay = async (req, res) => {
   try {
-    const workout = await workoutService.createWorkoutDay(req.body);
+    const userId = req.user._id; // Assuming user ID is stored in req.user
+    const workout = await workoutService.createWorkoutDay(req.body, userId);
     res.status(201).json(workout);
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -38,5 +39,14 @@ export const getExerciseHistory = async (req, res) => {
     res.status(200).json(allSets);
   } catch (err) {
     res.status(500).json({ message: 'Server Error', error: err.message });
+  }
+};
+
+export const getAllExercises = async (req, res) => {
+  try {
+    const exercises = await workoutService.getAllExercises();
+    res.json(exercises);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
